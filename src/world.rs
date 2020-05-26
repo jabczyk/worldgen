@@ -1,12 +1,29 @@
 use crate::tiles::get_ascii_tile;
 
 pub struct World {
-    pub map: Vec<Vec<u32>>,
+    width: usize,
+    height: usize,
+    map: Vec<Vec<u32>>,
 }
 
 impl World {
-    pub fn set_tile(&mut self, x: usize, y: usize, block: u32) {
-        self.map[y][x] = block
+    pub fn new(width: usize, height: usize) -> World {
+        World {
+            width,
+            height,
+            map: World::generate_empty_map(width, height),
+        }
+    }
+
+    fn generate_empty_map(width: usize, height: usize) -> Vec<Vec<u32>> {
+        vec![vec![0u32; width]; height]
+    }
+
+    pub fn set_tile(&mut self, x: usize, y: usize, tile: u32) {
+        if x >= self.width || y >= self.height {
+            panic!("Tried to set tile outside the map x: {} y: {}", x, y)
+        }
+        self.map[y][x] = tile
     }
 
     pub fn render_ascii_map(self) -> String {
@@ -17,8 +34,4 @@ impl World {
         }
         map
     }
-}
-
-pub fn generate_map(size_x: usize, size_y: usize) -> Vec<Vec<u32>> {
-    vec![vec![0u32; size_x]; size_y]
 }
