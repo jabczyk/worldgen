@@ -1,8 +1,8 @@
 use crate::tiles::get_ascii_tile;
 
 pub struct World {
-    width: usize,
-    height: usize,
+    pub width: usize,
+    pub height: usize,
     map: Vec<Vec<u32>>,
 }
 
@@ -24,6 +24,30 @@ impl World {
             panic!("Tried to set tile outside the map x: {} y: {}", x, y)
         }
         self.map[y][x] = tile
+    }
+
+    pub fn fill_rectangle(
+        &mut self,
+        start_x: usize,
+        start_y: usize,
+        width: usize,
+        height: usize,
+        tile: u32,
+    ) {
+        let end_x = start_x + width;
+        let end_y = start_y + height;
+        if end_x > self.width || end_y > self.height {
+            panic!(
+                "Tried to fill tiles outside the map x: {} y: {}",
+                end_x, end_y
+            )
+        }
+
+        for y in start_y..end_y {
+            for x in start_x..end_x {
+                World::set_tile(self, x, y, tile);
+            }
+        }
     }
 
     pub fn render_ascii_map(self) -> String {
