@@ -1,4 +1,4 @@
-use crate::{tiles::STONE, world::World};
+use crate::{tiles::{STONE, DIRT, SAND}, world::World};
 
 pub struct TerrainOptions {
     pub sea_level: usize,
@@ -27,6 +27,18 @@ fn generate_mountains(world: &mut World, options: &TerrainOptions) {
     for x in 0..world.width {
         let perlin = world.perlin(x, 0, 40.0);
         let height = (perlin * max_height as f64).round() as usize;
-        world.fill_rectangle(x, world.height - height, 1, height, STONE);
+        let y = world.height - height;
+        world.fill_rectangle(x, y, 1, height, STONE);
+        replace_ground_tiles(world, options, x, y);
     }
+}
+
+fn replace_ground_tiles(world: &mut World, options: &TerrainOptions, x: usize, max_y: usize) {
+    let new_tile = if max_y < world.height - options.sea_level {
+        DIRT
+    } else {
+        SAND
+    };
+    let tiles_to_change = 2;
+    world.fill_rectangle(x, max_y, 1, tiles_to_change, new_tile)
 }
