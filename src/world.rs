@@ -1,17 +1,20 @@
 use crate::tiles::get_ascii_tile;
+use noise::{NoiseFn, Perlin, Seedable};
 
 pub struct World {
     pub width: usize,
     pub height: usize,
     map: Vec<Vec<u32>>,
+    pub seed: u32,
 }
 
 impl World {
-    pub fn new(width: usize, height: usize) -> World {
+    pub fn new(width: usize, height: usize, seed: u32) -> World {
         World {
             width,
             height,
             map: World::generate_empty_map(width, height),
+            seed,
         }
     }
 
@@ -48,6 +51,14 @@ impl World {
                 World::set_tile(self, x, y, tile);
             }
         }
+    }
+
+    pub fn perlin(&self, x: usize, y: usize, scale: f64) -> f64 {
+        // TODO: refactor so perlin is initialized once
+        let perlin = Perlin::new().set_seed(self.seed);
+        let value = perlin.get([x as f64 / scale, y as f64 / scale]);
+        // convert <-1;1> to <0;1>
+        value / 2.0 + 0.5
     }
 
     pub fn render_ascii_map(self) -> String {
