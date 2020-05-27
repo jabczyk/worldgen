@@ -1,4 +1,7 @@
-use crate::{tiles::{STONE, DIRT, SAND, AIR, WATER}, world::World};
+use crate::{
+    tiles::{AIR, DIRT, SAND, STONE, WATER},
+    world::World,
+};
 
 pub struct TerrainOptions {
     pub sea_level: usize,

@@ -9,11 +9,11 @@ pub struct World {
 }
 
 impl World {
-    pub fn new(width: usize, height: usize, seed: u32) -> World {
-        World {
+    pub fn new(width: usize, height: usize, seed: u32) -> Self {
+        Self {
             width,
             height,
-            map: World::generate_empty_map(width, height),
+            map: Self::generate_empty_map(width, height),
             seed,
         }
     }
@@ -55,7 +55,7 @@ impl World {
 
         for y in start_y..end_y {
             for x in start_x..end_x {
-                World::set_tile(self, x, y, tile);
+                Self::set_tile(self, x, y, tile);
             }
         }
     }
