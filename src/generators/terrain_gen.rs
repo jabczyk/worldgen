@@ -28,10 +28,12 @@ fn fill_underworld(world: &mut World, options: &TerrainOptions) {
 
 fn generate_mountains(world: &mut World, options: &TerrainOptions) {
     let max_height = options.mountain_height + options.hole_offset;
+    let horizon = world.height - (options.sea_level - options.hole_offset);
+
     for x in 0..world.width {
         let perlin = world.perlin(x, 0, 40.0);
         let height = (perlin * max_height as f64).round() as usize;
-        let y = world.height - height;
+        let y = horizon - height;
         world.fill_rectangle(x, y, 1, height, STONE);
         replace_ground_tiles(world, options, x, y);
     }
