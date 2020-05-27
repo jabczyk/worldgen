@@ -22,6 +22,13 @@ impl World {
         vec![vec![0u32; width]; height]
     }
 
+    pub fn tile_at(&self, x: usize, y: usize) -> u32 {
+        if x >= self.width || y >= self.height {
+            panic!("Tried to get tile outside the map x: {} y: {}", x, y)
+        }
+        self.map[y][x]
+    }
+
     pub fn set_tile(&mut self, x: usize, y: usize, tile: u32) {
         if x >= self.width || y >= self.height {
             panic!("Tried to set tile outside the map x: {} y: {}", x, y)

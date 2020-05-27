@@ -1,4 +1,4 @@
-use crate::{tiles::{STONE, DIRT, SAND}, world::World};
+use crate::{tiles::{STONE, DIRT, SAND, AIR, WATER}, world::World};
 
 pub struct TerrainOptions {
     pub sea_level: usize,
@@ -9,6 +9,7 @@ pub struct TerrainOptions {
 pub fn generate_terrain(world: &mut World, options: TerrainOptions) {
     fill_underworld(world, &options);
     generate_mountains(world, &options);
+    generate_sea_water(world, &options);
 }
 
 fn fill_underworld(world: &mut World, options: &TerrainOptions) {
@@ -41,4 +42,14 @@ fn replace_ground_tiles(world: &mut World, options: &TerrainOptions, x: usize, m
     };
     let tiles_to_change = 2;
     world.fill_rectangle(x, max_y, 1, tiles_to_change, new_tile)
+}
+
+fn generate_sea_water(world: &mut World, options: &TerrainOptions) {
+    for x in 0..world.width {
+        let mut y = world.height - options.sea_level;
+        while world.tile_at(x, y) == AIR {
+            world.set_tile(x, y, WATER);
+            y += 1;
+        }
+    }
 }
