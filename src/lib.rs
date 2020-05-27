@@ -16,5 +16,7 @@ pub fn generate_world() {
         },
     );
 
-    println!("Hello, world!\n{}", world.render_ascii_map());
+    // Since println prints a line, no need for \n
+    // Also, no real need for Hello, world :)
+    println!("{}", world.render_ascii_map());
 }

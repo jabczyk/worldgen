@@ -1,7 +1,4 @@
-use crate::{
-    tiles::{AIR, DIRT, SAND, STONE, WATER},
-    world::World,
-};
+use crate::{tiles::TileType, world::World};
 
 pub struct TerrainOptions {
     pub sea_level: usize,
@@ -22,7 +19,7 @@ fn fill_underworld(world: &mut World, options: &TerrainOptions) {
         world.height - options.sea_level + options.hole_offset,
         world.width,
         options.sea_level - options.hole_offset,
-        STONE,
+        TileType::Stone,
     )
 }
 
@@ -34,16 +31,16 @@ fn generate_mountains(world: &mut World, options: &TerrainOptions) {
         let perlin = world.perlin(x, 0, 40.0);
         let height = (perlin * max_height as f64).round() as usize;
         let y = horizon - height;
-        world.fill_rectangle(x, y, 1, height, STONE);
+        world.fill_rectangle(x, y, 1, height, TileType::Stone);
         replace_ground_tiles(world, options, x, y);
     }
 }
 
 fn replace_ground_tiles(world: &mut World, options: &TerrainOptions, x: usize, max_y: usize) {
     let new_tile = if max_y < world.height - options.sea_level {
-        DIRT
+        TileType::Dirt
     } else {
-        SAND
+        TileType::Sand
     };
     let tiles_to_change = 2;
     world.fill_rectangle(x, max_y, 1, tiles_to_change, new_tile)
@@ -52,8 +49,8 @@ fn replace_ground_tiles(world: &mut World, options: &TerrainOptions, x: usize, m
 fn generate_sea_water(world: &mut World, options: &TerrainOptions) {
     for x in 0..world.width {
         let mut y = world.height - options.sea_level;
-        while world.tile_at(x, y) == AIR {
-            world.set_tile(x, y, WATER);
+        while world.tile_at(x, y) == TileType::Air {
+            world.set_tile(x, y, TileType::Water);
             y += 1;
         }
     }
