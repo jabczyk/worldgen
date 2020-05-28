@@ -1,10 +1,10 @@
-use crate::tiles::get_ascii_tile;
+use crate::tiles::TileType;
 use noise::{NoiseFn, Perlin, Seedable};
 
 pub struct World {
     pub width: usize,
     pub height: usize,
-    map: Vec<Vec<u32>>,
+    map: Vec<Vec<TileType>>,
     pub seed: u32,
 }
 
@@ -18,22 +18,25 @@ impl World {
         }
     }
 
-    fn generate_empty_map(width: usize, height: usize) -> Vec<Vec<u32>> {
-        vec![vec![0u32; width]; height]
+    fn generate_empty_map(width: usize, height: usize) -> Vec<Vec<TileType>> {
+        vec![vec![TileType::Air; width]; height]
     }
 
-    pub fn tile_at(&self, x: usize, y: usize) -> u32 {
-        if x >= self.width || y >= self.height {
-            panic!("Tried to get tile outside the map x: {} y: {}", x, y)
-        }
-        self.map[y][x]
+    pub fn tile_at(&self, x: usize, y: usize) -> TileType {
+        *self.map
+            .get(y)
+            .expect("Can't get since Y coordinate is out of bounds!")
+            .get(x)
+            .expect("Can't get since X coordinate is out of bounds!")
     }
 
-    pub fn set_tile(&mut self, x: usize, y: usize, tile: u32) {
-        if x >= self.width || y >= self.height {
-            panic!("Tried to set tile outside the map x: {} y: {}", x, y)
-        }
-        self.map[y][x] = tile
+    pub fn set_tile(&mut self, x: usize, y: usize, tile: TileType) {
+        let map_tile = self.map
+            .get_mut(y)
+            .expect("Can't set since Y coordinate is out of bounds!")
+            .get_mut(x)
+            .expect("Can't set since X coordinate is out of bounds!");
+        *map_tile = tile;
     }
 
     pub fn fill_rectangle(
@@ -42,7 +45,7 @@ impl World {
         start_y: usize,
         width: usize,
         height: usize,
-        tile: u32,
+        tile: TileType,
     ) {
         let end_x = start_x + width;
         let end_y = start_y + height;
@@ -71,7 +74,7 @@ impl World {
     pub fn render_ascii_map(self) -> String {
         let mut map = String::from("");
         for y in self.map {
-            let tiles: String = y.into_iter().map(get_ascii_tile).collect();
+            let tiles: String = y.into_iter().map(|t| t.to_string()).collect();
             map.push_str(format!("|{}|\n", tiles).as_str());
         }
         map

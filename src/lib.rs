@@ -16,5 +16,5 @@ pub fn generate_world() {
         },
     );
 
-    println!("Hello, world!\n{}", world.render_ascii_map());
+    println!("{}", world.render_ascii_map());
 }

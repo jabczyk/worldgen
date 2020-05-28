@@ -1,16 +1,33 @@
-pub const AIR: u32 = 0;
-pub const STONE: u32 = 1;
-pub const DIRT: u32 = 2;
-pub const SAND: u32 = 3;
-pub const WATER: u32 = 4;
+use std::{fmt, convert};
 
-pub fn get_ascii_tile(tile: u32) -> &'static str {
-    match tile {
-        AIR => " ",
-        STONE => "#",
-        DIRT => "*",
-        SAND => "%",
-        WATER => "_",
-        _ => "?",
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum TileType {
+    Air,
+    Stone,
+    Dirt,
+    Sand,
+    Water
+}
+
+impl fmt::Display for TileType {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match &self {
+            TileType::Air => write!(f, " "),
+            TileType::Stone => write!(f, "#"),
+            TileType::Dirt => write!(f, "*"),
+            TileType::Sand => write!(f, "%"),
+            TileType::Water => write!(f, "_"),
+        }
+    }
+}
+impl convert::Into<u32> for TileType {
+    fn into(self) -> u32 {
+        match self {
+            TileType::Air => 0u32,
+            TileType::Stone => 1u32,
+            TileType::Dirt => 2u32,
+            TileType::Sand => 3u32,
+            TileType::Water => 4u32,
+        }
     }
 }
